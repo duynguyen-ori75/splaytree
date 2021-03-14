@@ -34,11 +34,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define _get_entry(ELEM, STRUCT, MEMBER) ((STRUCT *) ((int8_t *) (ELEM) - offsetof (STRUCT, MEMBER)))
 
 #ifdef __cplusplus
+
 #include <cstdio>
-#include <cstddef>
 
 extern "C" {
 #endif
+
+#include <stddef.h>
 
 struct splay_node {
   struct splay_node *left, *right;

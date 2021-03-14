@@ -7,17 +7,17 @@ extern "C" {
 struct data_node {
   int key;
 
-  struct splay_node node;
+  splay_node node;
 };
 
-int cmp_func(struct splay_node *lhs, struct splay_node *rhs) {
+int cmp_func(splay_node *lhs, splay_node *rhs) {
   int leftKey   = _get_entry(lhs, data_node, node)->key;
   int rightKey  = _get_entry(rhs, data_node, node)->key;
   return leftKey - rightKey;
 }
 
 TEST(SplayTree, SplayInsertAndSearch) {
-  struct data_node data[100];
+  data_node data[100];
   splay_tree tree;
   splay_tree_init(&tree);
 
@@ -26,8 +26,8 @@ TEST(SplayTree, SplayInsertAndSearch) {
     splay_insert(&tree, &data[i].node, cmp_func);
   }
 
-  struct data_node query, *result;
-  struct splay_node *cur;
+  data_node query, *result;
+  splay_node *cur;
   for(int i = 0; i < 200; i ++) {
     query.key = i;
     cur = splay_search(&tree, &query.node, cmp_func);
@@ -47,7 +47,7 @@ TEST(SplayTree, SplayInsertAndSearch) {
 }
 
 TEST(SplayTree, SplayRemove) {
-  struct data_node data[200];
+  data_node data[200];
   splay_tree tree;
   splay_tree_init(&tree);
 
@@ -56,8 +56,8 @@ TEST(SplayTree, SplayRemove) {
     splay_insert(&tree, &data[i].node, cmp_func);
   }
 
-  struct data_node query, *result;
-  struct splay_node *cur;
+  data_node query, *result;
+  splay_node *cur;
   for(int i = 0; i < 100; i ++) {
     query.key = rand() % 200;
 

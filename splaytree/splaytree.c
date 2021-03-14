@@ -112,7 +112,9 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func
 
   if (tree->root) {
     tree->root = _splay(tree->root, node, func);
-    if (func(tree->root, node) > 0) {
+    int cmp = func(tree->root, node);
+    if (cmp == 0) return;
+    if (cmp > 0) {
       node->right       = tree->root;
       node->left        = tree->root->left;
       tree->root->left  = NULL;
@@ -135,7 +137,7 @@ void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func
   if (!tree->root->left) {
     tree->root = tree->root->right;
   } else {
-    splay_node **root = &tree->root;
+    struct splay_node **root = &tree->root;
     // splay the biggest node of the left subtree to the top, and then attach current right-subtree to that node
     struct splay_node *pp = NULL, *p;
     for (p = (*root)->left; p->right; p = p->right) {

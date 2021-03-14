@@ -1,8 +1,6 @@
 SRC = splaytree/splaytree.c
 
-TEST_SRC = app/test.cc
-
-PROGRAMS = test
+PROGRAMS = test example
 
 LDFLAGS =
 
@@ -15,8 +13,11 @@ CXXFLAGS = $(CFLAGS) --std=c++11
 
 all: $(PROGRAMS)
 
+example:
+	$(CC)  $(CFLAGS) app/example.c $(SRC) -o $@ $(LDFLAGS)
+
 test:
-	$(CXX) $(CXXFLAGS) $(TEST_SRC) $(SRC) -o $@ $(LDFLAGS) -lgtest -lpthread
+	$(CXX) $(CXXFLAGS) app/test.cc $(SRC) -o $@ $(LDFLAGS) -lgtest -lpthread
 
 clean:
 	rm -rf $(PROGRAMS) ./*.o ./*.so
