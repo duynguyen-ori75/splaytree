@@ -34,24 +34,27 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define _get_entry(ELEM, STRUCT, MEMBER) ((STRUCT *) ((int8_t *) (ELEM) - offsetof (STRUCT, MEMBER)))
 
 #ifdef __cplusplus
+#include <cstdio>
+#include <cstddef>
+
 extern "C" {
 #endif
 
 struct splay_node {
   struct splay_node *left, *right;
-}
+};
 
 struct splay_tree {
   struct splay_node *root;
-}
+};
 
-typedef int cmp_func (struct splay_node *a, struct splay_node *b);
+typedef int compare_func (struct splay_node *a, struct splay_node *b);
 
 void splay_tree_init(struct splay_tree *tree);
-void splay_insert(struct splay_tree *tree, struct splay_node *node, cmp_func *func);
-void splay_delete(struct splay_tree *tree, struct splay_node *node, cmp_func *func);
-struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, cmp_func *func);
-struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, cmp_func *func);
+void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func *func);
+void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func *func);
+struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, compare_func *func);
+struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 
 
 #ifdef __cplusplus

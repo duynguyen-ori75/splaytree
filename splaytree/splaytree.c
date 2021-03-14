@@ -38,7 +38,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "splaytree.h"
 
-
 INLINE struct splay_node *_right_rotate(struct splay_node *x) {
   struct splay_node *y = x->left;
   x->left = y->right;
@@ -59,7 +58,7 @@ INLINE void _init_splay_node(struct splay_node* p) {
 
 struct splay_node *_splay(struct splay_node *root,
                           struct splay_node *query,
-                          cmp_func *func) {
+                          compare_func *func) {
   if (!root) return root;
   struct splay_node N;
   N.left = N.right = NULL;
@@ -108,7 +107,7 @@ void splay_tree_init(struct splay_tree *tree) {
   tree->root = NULL;
 }
 
-void splay_insert(struct splay_tree *tree, struct splay_node *node, cmp_func *func) {
+void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   _init_splay_node(node);
 
   if (tree->root) {
@@ -127,20 +126,19 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, cmp_func *fu
   tree->root = node;
 }
 
-void splay_delete(struct splay_tree *tree, struct splay_node *node, cmp_func *func) {
-  if (!root) return;
+void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
+  if (!tree->root) return;
 
-  tree->root = _splay(tree->root, node);
+  tree->root = _splay(tree->root, node, func);
   if (func(tree->root, node) != 0) return;
 
   if (!tree->root->left) {
-    tree->root = root->right;
+    tree->root = tree->root->right;
   } else {
-    splay_node **root = *tree->root;
+    splay_node **root = &tree->root;
     // splay the biggest node of the left subtree to the top, and then attach current right-subtree to that node
     struct splay_node *pp = NULL, *p;
-    struct splay_node *p = (*root)->left;
-    for (p = (*root)->left; p; p = p->right) {
+    for (p = (*root)->left; p->right; p = p->right) {
       pp = p;
     }
     if (pp) {
@@ -149,25 +147,29 @@ void splay_delete(struct splay_tree *tree, struct splay_node *node, cmp_func *fu
       (*root)->left = p;
     }
 
-    (*root)->left->right = (*root)->right;
-    *root = (*root)->left;
+    p->right = (*root)->right;
+    *root = p;
   }
 }
 
-struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, cmp_func *func) {
+struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   tree->root = _splay(tree->root, node, func);
-  return tree->root;
+  if (func(tree->root, node) == 0) {
+    return tree->root;
+  }
+
+  return NULL;
 }
 
-struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, cmp_func *func) {
+struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   tree->root = _splay(tree->root, node, func);
   if (func(tree->root, node) >= 0) {
     return tree->root;
   }
 
-  if (!cur->right) return NULL;
-  SplayNode *cur;
+  if (!tree->root->right) return NULL;
+  struct splay_node *cur;
 
-  for (cur = root->right; cur->left; cur = cur->left) {}
+  for (cur = tree->root->right; cur->left; cur = cur->left) {}
   return cur;
 }
