@@ -1,6 +1,6 @@
 # Splay tree
 
-A zero-allocation, generic Top-down Splay tree container C implementation.
+A highly-performant, zero-allocation, generic Top-down Splay tree container C implementation
 
 ## Author
 
@@ -65,6 +65,5 @@ splay_delete(&tree, &query.node, cmp_func);
 
 ## TODO
 
-- Support search lower function
 - Compare it with other BST such as AVL tree
-- Support prev, next, first and last operators
+- Support prev and next operators

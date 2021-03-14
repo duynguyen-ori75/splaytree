@@ -16,7 +16,7 @@ all: $(PROGRAMS)
 example:
 	$(CC)  $(CFLAGS) app/example.c $(SRC) -o $@ $(LDFLAGS)
 
-test:
+test: clean
 	$(CXX) $(CXXFLAGS) app/test.cc $(SRC) -o $@ $(LDFLAGS) -lgtest -lpthread
 
 clean:

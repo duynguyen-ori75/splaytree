@@ -41,6 +41,7 @@ extern "C" {
 #endif
 
 #include <stddef.h>
+#include <stdbool.h>
 
 struct splay_node {
   struct splay_node *left, *right;
@@ -55,9 +56,12 @@ typedef int compare_func (struct splay_node *a, struct splay_node *b);
 void splay_tree_init(struct splay_tree *tree);
 void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func *func);
-struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, compare_func *func);
-struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 
+struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, compare_func *func);
+struct splay_node* splay_search_lower(struct splay_tree *tree, struct splay_node *node, compare_func *func);
+struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func);
+struct splay_node* splay_first(struct splay_tree *tree, bool to_splay);
+struct splay_node* splay_last(struct splay_tree *tree, bool to_splay);
 
 #ifdef __cplusplus
 }

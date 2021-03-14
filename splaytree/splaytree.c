@@ -163,6 +163,19 @@ struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node
   return NULL;
 }
 
+struct splay_node* splay_search_lower(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
+  tree->root = _splay(tree->root, node, func);
+  if (func(tree->root, node) <= 0) {
+    return tree->root;
+  }
+
+  if (!tree->root->left) return NULL;
+  struct splay_node *cur;
+
+  for (cur = tree->root->left; cur->right; cur = cur->right) {}
+  return cur;
+}
+
 struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   tree->root = _splay(tree->root, node, func);
   if (func(tree->root, node) >= 0) {
@@ -174,4 +187,32 @@ struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_no
 
   for (cur = tree->root->right; cur->left; cur = cur->left) {}
   return cur;
+}
+
+struct splay_node* splay_first(struct splay_tree *tree, bool to_splay) {
+  if (!tree->root) return NULL;
+  struct splay_node *p, *pp = NULL;
+  for(p = tree->root; p->left; p = p->left) {
+    pp = p;
+  }
+  if (pp && to_splay) {
+    pp->left = p->right;
+    p->right = tree->root;
+    tree->root = p;
+  }
+  return p;
+}
+
+struct splay_node* splay_last(struct splay_tree *tree, bool to_splay) {
+  if (!tree->root) return NULL;
+  struct splay_node *p, *pp = NULL;
+  for(p = tree->root; p->right; p = p->right) {
+    pp = p;
+  }
+  if (pp && to_splay) {
+    pp->right = p->left;
+    p->left = tree->root;
+    tree->root = p;
+  }
+  return p;
 }

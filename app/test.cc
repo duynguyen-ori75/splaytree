@@ -28,6 +28,7 @@ TEST(SplayTree, SplayInsertAndSearch) {
 
   data_node query, *result;
   splay_node *cur;
+  int expectedKey;
   for(int i = 0; i < 200; i ++) {
     query.key = i;
     cur = splay_search(&tree, &query.node, cmp_func);
@@ -39,9 +40,18 @@ TEST(SplayTree, SplayInsertAndSearch) {
       ASSERT_EQ(cur, nullptr);
     }
 
+    cur = splay_search_lower(&tree, &query.node, cmp_func);
+    if (cur <= 0) {
+      ASSERT_EQ(cur, nullptr);
+    } else {
+      result = _get_entry(cur, data_node, node);
+      expectedKey = (i % 2) ? i : i - 1;
+      ASSERT_EQ(result->key, expectedKey);
+    }
+
     cur = splay_search_greater(&tree, &query.node, cmp_func);
     result = _get_entry(cur, data_node, node);
-    int expectedKey = (i % 2) ? i : i + 1;
+    expectedKey = (i % 2) ? i : i + 1;
     ASSERT_EQ(result->key, expectedKey);
   }
 }
@@ -71,6 +81,29 @@ TEST(SplayTree, SplayRemove) {
       ASSERT_GT(result->key, query.key);
     }
   }
+}
+
+TEST(SplayTree, SplayFirstAndLast) {
+  data_node data[200];
+  splay_tree tree;
+  splay_tree_init(&tree);
+
+  for(int i = 0; i < 200; i ++) {
+    data[i].key = i;
+    splay_insert(&tree, &data[i].node, cmp_func);
+  }
+
+  splay_node *cur = splay_first(&tree, true);
+  data_node *result = _get_entry(cur, data_node, node);
+  ASSERT_EQ(cur, tree.root);
+  ASSERT_EQ(cur->left, nullptr);
+  ASSERT_EQ(result->key, 0);
+
+  cur = splay_last(&tree, true);
+  result = _get_entry(cur, data_node, node);
+  ASSERT_EQ(cur, tree.root);
+  ASSERT_EQ(cur->right, nullptr);
+  ASSERT_EQ(result->key, 199);
 }
 
 int main(int argc, char **argv) {
