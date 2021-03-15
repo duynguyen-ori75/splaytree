@@ -27,9 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #ifndef INLINE
-  #ifdef __APPLE__
-    #define INLINE extern inline
-  #elif __linux__
+  #ifdef __linux__
     #define INLINE static inline
   #else
     #define INLINE
@@ -54,6 +52,9 @@ INLINE struct splay_node *_left_rotate(struct splay_node *x) {
 
 INLINE void _init_splay_node(struct splay_node* p) {
   p->left = p->right = NULL;
+#ifdef _SPLAY_SIBLING_POINTER
+  p->prev = p->next = NULL;
+#endif
 }
 
 struct splay_node *_splay(struct splay_node *root,
@@ -118,10 +119,26 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func
       node->right       = tree->root;
       node->left        = tree->root->left;
       tree->root->left  = NULL;
+#ifdef _SPLAY_SIBLING_POINTER
+      node->next        = tree->root;
+      node->prev        = tree->root->prev;
+      if (tree->root->prev) {
+        tree->root->prev->next = node;
+      }
+      tree->root->prev  = node;
+#endif
     } else {
       node->left        = tree->root;
       node->right       = tree->root->right;
       tree->root->right = NULL;
+#ifdef _SPLAY_SIBLING_POINTER
+      node->prev        = tree->root;
+      node->next        = tree->root->next;
+      if (tree->root->next) {
+        tree->root->next->prev = node;
+      }
+      tree->root->next  = node;
+#endif
     }
   }
 
@@ -135,6 +152,11 @@ void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func
   if (func(tree->root, node) != 0) return;
 
   if (!tree->root->left) {
+#ifdef _SPLAY_SIBLING_POINTER
+    if (tree->root->next)
+      tree->root->next->prev = NULL;
+    tree->root->next = NULL;
+#endif
     tree->root = tree->root->right;
   } else {
     struct splay_node **root = &tree->root;
@@ -150,6 +172,12 @@ void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func
     }
 
     p->right = (*root)->right;
+#ifdef _SPLAY_SIBLING_POINTER
+    p->next = (*root)->next;
+    if ((*root)->next) {
+      (*root)->next->prev = p;
+    }
+#endif
     *root = p;
   }
 }
@@ -214,5 +242,35 @@ struct splay_node* splay_last(struct splay_tree *tree, bool to_splay) {
     p->left = tree->root;
     tree->root = p;
   }
+  return p;
+}
+
+struct splay_node* splay_prev(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
+
+#ifdef _SPLAY_SIBLING_POINTER
+  return node->prev;
+#endif
+
+  struct splay_node *p;
+  if (node->left) goto move_prev;
+  tree->root = _splay(tree->root, node, func);
+
+move_prev:
+  for(p = node->left; p && p->right; p = p->right) {}
+  return p;
+}
+
+struct splay_node* splay_next(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
+
+#ifdef _SPLAY_SIBLING_POINTER
+  return node->next;
+#endif
+
+  struct splay_node *p;
+  if (node->right) goto move_next;
+  tree->root = _splay(tree->root, node, func);
+
+move_next:
+  for(p = node->right; p && p->left; p = p->left) {}
   return p;
 }

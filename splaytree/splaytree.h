@@ -45,6 +45,10 @@ extern "C" {
 
 struct splay_node {
   struct splay_node *left, *right;
+
+#ifdef _SPLAY_SIBLING_POINTER
+  struct splay_node *prev, next;
+#endif
 };
 
 struct splay_tree {
@@ -62,6 +66,8 @@ struct splay_node* splay_search_lower(struct splay_tree *tree, struct splay_node
 struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 struct splay_node* splay_first(struct splay_tree *tree, bool to_splay);
 struct splay_node* splay_last(struct splay_tree *tree, bool to_splay);
+struct splay_node* splay_prev(struct splay_tree *tree, struct splay_node *node, compare_func *func);
+struct splay_node* splay_next(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 
 #ifdef __cplusplus
 }
