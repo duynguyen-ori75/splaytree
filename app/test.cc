@@ -83,12 +83,12 @@ TEST(SplayTree, SplayRemove) {
   }
 }
 
-TEST(SplayTree, SplayFirstAndLast) {
-  data_node data[200];
+TEST(SplayTree, SplayCursorOperator) {
+  data_node data[201];
   splay_tree tree;
   splay_tree_init(&tree);
 
-  for(int i = 0; i < 200; i ++) {
+  for(int i = 1; i <= 200; i ++) {
     data[i].key = i;
     splay_insert(&tree, &data[i].node, cmp_func);
   }
@@ -97,13 +97,33 @@ TEST(SplayTree, SplayFirstAndLast) {
   data_node *result = _get_entry(cur, data_node, node);
   ASSERT_EQ(cur, tree.root);
   ASSERT_EQ(cur->left, nullptr);
-  ASSERT_EQ(result->key, 0);
+  ASSERT_EQ(result->key, 1);
+  for(int i = 2; i <= 201; i ++) {
+    cur = splay_next(&tree, cur, cmp_func);
+    if (i == 201) {
+      ASSERT_TRUE(cur == nullptr);
+      break;
+    }
+    ASSERT_TRUE(cur != nullptr);
+    data_node *result = _get_entry(cur, data_node, node);
+    ASSERT_EQ(result->key, i);
+  }
 
   cur = splay_last(&tree, true);
   result = _get_entry(cur, data_node, node);
   ASSERT_EQ(cur, tree.root);
   ASSERT_EQ(cur->right, nullptr);
-  ASSERT_EQ(result->key, 199);
+  ASSERT_EQ(result->key, 200);
+  for(int i = 199; i >= 0; i --) {
+    cur = splay_prev(&tree, cur, cmp_func);
+    if (i == 0) {
+      ASSERT_TRUE(cur == nullptr);
+      break;
+    }
+    ASSERT_TRUE(cur != nullptr);
+    data_node *result = _get_entry(cur, data_node, node);
+    ASSERT_EQ(result->key, i);
+  }
 }
 
 int main(int argc, char **argv) {

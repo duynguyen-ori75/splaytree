@@ -47,7 +47,7 @@ struct splay_node {
   struct splay_node *left, *right;
 
 #ifdef _SPLAY_SIBLING_POINTER
-  struct splay_node *prev, next;
+  struct splay_node *prev, *next;
 #endif
 };
 

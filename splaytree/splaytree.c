@@ -246,6 +246,7 @@ struct splay_node* splay_last(struct splay_tree *tree, bool to_splay) {
 }
 
 struct splay_node* splay_prev(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
+  if (!node || !tree->root) return NULL;
 
 #ifdef _SPLAY_SIBLING_POINTER
   return node->prev;
@@ -261,6 +262,7 @@ move_prev:
 }
 
 struct splay_node* splay_next(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
+  if (!node || !tree->root) return NULL;
 
 #ifdef _SPLAY_SIBLING_POINTER
   return node->next;

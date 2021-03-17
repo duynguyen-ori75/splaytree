@@ -8,6 +8,7 @@ CFLAGS = \
 	-g -D_GNU_SOURCE \
 	-I. -I./splaytree \
 	-O2 -Wall \
+	-D_SPLAY_SIBLING_POINTER
 
 CXXFLAGS = $(CFLAGS) --std=c++11
 

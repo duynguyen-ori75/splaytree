@@ -66,4 +66,3 @@ splay_delete(&tree, &query.node, cmp_func);
 ## TODO
 
 - Compare it with other BST such as AVL tree
-- Support prev and next operators
