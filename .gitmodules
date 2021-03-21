@@ -1,0 +1,3 @@
+[submodule "3rd/avltree"]
+	path = 3rd/avltree
+	url = git@github.com:greensky00/avltree.git

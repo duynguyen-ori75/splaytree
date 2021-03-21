@@ -8,6 +8,8 @@ Duy Nguyen <duynguyen.ori75@gmail.com>
 
 ## Build
 
+Prerequisites for test and benchmark: [googletest](https://github.com/google/googletest) and [gbenchmark](https://github.com/google/benchmark)
+
 ```sh
 make
 ```
@@ -63,6 +65,13 @@ query.key = rand() % 200;
 splay_delete(&tree, &query.node, cmp_func);
 ```
 
-## TODO
+## DOING
 
-- Compare it with other BST such as AVL tree
+- [ ] Compare it with other BST such as AVL tree
+  - [x] Append workload
+  - [ ] Random insert workload
+  - [ ] Loop sequentially workload
+  - [ ] Random access workload
+  - [ ] Pareto workload - aka 80/20
+  - [ ] Delete sequentially
+  - [ ] Delete randomly

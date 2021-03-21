@@ -1,6 +1,9 @@
 SRC = splaytree/splaytree.c
 
-PROGRAMS = test example
+PROGRAMS = test example benchmark
+
+3RD_INCLUDES 	= -I./3rd/avltree/avltree -I./3rd/avltree/rbtree
+3RD_SOURCES 	= ./3rd/avltree/avltree/avltree.c
 
 LDFLAGS =
 
@@ -19,6 +22,9 @@ example:
 
 test: clean
 	$(CXX) $(CXXFLAGS) app/test.cc $(SRC) -o $@ $(LDFLAGS) -lgtest -lpthread
+
+benchmark: clean
+	$(CXX) $(CXXFLAGS) app/bench.cc $(SRC) $(3RD_SOURCES) $(3RD_INCLUDES) -o $@ $(LDFLAGS) -lgtest -lbenchmark -lpthread
 
 clean:
 	rm -rf $(PROGRAMS) ./*.o ./*.so
