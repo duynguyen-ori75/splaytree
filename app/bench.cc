@@ -86,6 +86,16 @@ static void BM_RBTree_Append(benchmark::State& state) {
   }
 }
 
+static void BM_SETSet_Append(benchmark::State& state) {
+  for (auto _ : state) {
+    std::set<int> data;
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data.insert(idx + 1);
+    }
+  }
+}
+
 static void BM_SplayTree_InsertNormalDistribution(benchmark::State& state) {
   for (auto _ : state) {
     struct splay_tree tree;
@@ -128,12 +138,24 @@ static void BM_RBTree_InsertNormalDistribution(benchmark::State& state) {
   }
 }
 
+static void BM_STLSet_InsertNormalDistribution(benchmark::State& state) {
+  for (auto _ : state) {
+    std::set<int> data;
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data.insert(values[idx]);
+    }
+  }
+}
+
 BENCHMARK(BM_SplayTree_Append);
 BENCHMARK(BM_AVLTree_Append);
 BENCHMARK(BM_RBTree_Append);
+BENCHMARK(BM_SETSet_Append);
 BENCHMARK(BM_SplayTree_InsertNormalDistribution);
 BENCHMARK(BM_AVLTree_InsertNormalDistribution);
 BENCHMARK(BM_RBTree_InsertNormalDistribution);
+BENCHMARK(BM_STLSet_InsertNormalDistribution);
 
 int main(int argc, char** argv)
 {

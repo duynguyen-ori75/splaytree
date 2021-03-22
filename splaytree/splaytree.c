@@ -34,6 +34,8 @@ OTHER DEALINGS IN THE SOFTWARE.
   #endif
 #endif
 
+#include <stdlib.h>
+
 #include "splaytree.h"
 
 INLINE struct splay_node *_right_rotate(struct splay_node *x) {
@@ -112,6 +114,15 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func
   _init_splay_node(node);
 
   if (tree->root) {
+    /**
+     * as splay tree was born for locality,
+     *  we should expect that the current root is very close to the newly-inserted node
+     * however, there are cases where the new node is very far from the root
+     *  therefore, we still need to splay a node to the root, but the frequency should be low
+     * I believe that the 80/20 rule is a good choice here - just a feeling
+     */
+    if (rand() % 10 > 8)
+      tree->root = _splay(tree->root, node, func);
     int cmp = func(tree->root, node);
     if (cmp == 0) return;
     if (cmp > 0) {

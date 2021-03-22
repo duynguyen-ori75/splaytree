@@ -67,6 +67,13 @@ splay_delete(&tree, &query.node, cmp_func);
 
 ## Benchmark
 
+### Competitor
+
+- [AVL Tree](https://github.com/greensky00/avltree) by Jung-Sang Ahn
+- [Red-black Tree](https://github.com/greensky00/avltree/blob/master/rbtree/rbtree.c) by Andrea Arcangeli and David Woodhouse
+  - Thank Jung-Sang Ahn for his excellent wrapper
+- [STL Set](https://en.cppreference.com/w/cpp/container/set)
+
 ### Setup
 
 For benchmark implementation, please check `app/bench.cc`
@@ -82,26 +89,28 @@ CPU Caches:
   L3 Unified 12288 KiB (x1)
 ```
 
-## Append 100000 records
+### Insert result
 
 ```
 Benchmark                                      Time             CPU   Iterations
 --------------------------------------------------------------------------------
-BM_SplayTree_Append                       389557 ns       389553 ns         1754
-BM_AVLTree_Append                        6424796 ns      6424738 ns          106
-BM_RBTree_Append                        10069917 ns     10069844 ns           68
-BM_SplayTree_InsertNormalDistribution     577347 ns       577335 ns         1113
-BM_AVLTree_InsertNormalDistribution      4316927 ns      4316852 ns          161
-BM_RBTree_InsertNormalDistribution       4407875 ns      4407830 ns          159
+BM_SplayTree_Append                      1063859 ns      1063843 ns          614
+BM_AVLTree_Append                        6093468 ns      6093298 ns          111
+BM_RBTree_Append                        10684335 ns     10684150 ns           64
+BM_SETSet_Append                        11836129 ns     11835528 ns           57
+BM_SplayTree_InsertNormalDistribution    1508689 ns      1508672 ns          449
+BM_AVLTree_InsertNormalDistribution      4542861 ns      4542757 ns          155
+BM_RBTree_InsertNormalDistribution       4234119 ns      4234045 ns          163
+BM_STLSet_InsertNormalDistribution       3179226 ns      3179136 ns          224
 ```
 
 ## DOING
 
 - [ ] Compare it with other BST such as AVL tree
   - [x] Append workload
-  - [x] Insert normal distributed data
-  - [ ] Loop sequentially workload
+  - [x] Insert normal-distributed data
+  - [ ] Loop sequentially
   - [ ] Random access workload
-  - [ ] Pareto workload - aka 80/20
+  - [ ] Read normal-distributed data
   - [ ] Delete sequentially
   - [ ] Delete randomly
