@@ -112,7 +112,6 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func
   _init_splay_node(node);
 
   if (tree->root) {
-    tree->root = _splay(tree->root, node, func);
     int cmp = func(tree->root, node);
     if (cmp == 0) return;
     if (cmp > 0) {
