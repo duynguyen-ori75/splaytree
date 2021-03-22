@@ -4,35 +4,36 @@
 
 #include "splaytree.h"
 #include "avltree.h"
+#include "rbwrap.h"
 
 #define NUMBER_ELEMENTS 100000
 
 // custom structs
-struct kv_node {
-  struct splay_node node;
+class kv_node {
+public:
+  splay_node node;
   int key;
 };
 
-struct kv_node_avl {
-  struct avl_node node;
+class kv_node_avl {
+public:
+  avl_node node;
+  int key;
+};
+
+class kv_node_rb {
+public:
+  rb_node node;
   int key;
 };
 
 // custom comparison funcs
-int splay_compare(struct splay_node *lhs, struct splay_node *rhs) {
-  kv_node *aa = _get_entry(lhs, struct kv_node, node);
-  kv_node *bb = _get_entry(rhs, struct kv_node, node);
+template <typename T, typename T2>
+int compare(T2 *lhs, T2 *rhs) {
+  auto *aa = _get_entry(lhs, T, node);
+  auto *bb = _get_entry(rhs, T, node);
   if (aa->key == bb->key) return 0;
   return aa->key - bb->key;
-}
-
-int avl_compare(struct avl_node *lhs, struct avl_node *rhs, void *aux) {
-  kv_node_avl *aa, *bb;
-  aa = _get_entry(lhs, struct kv_node_avl, node);
-  bb = _get_entry(rhs, struct kv_node_avl, node);
-  if (aa->key < bb->key) return -1;
-  else if (aa->key > bb->key) return 1;
-  else return 0;
 }
 
 static void BM_SplayTree_Append(benchmark::State& state) {
@@ -44,7 +45,7 @@ static void BM_SplayTree_Append(benchmark::State& state) {
 
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
       data[idx].key = idx + 1;
-      splay_insert(&tree, &data[idx].node, splay_compare);
+      splay_insert(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
     }
   }
 }
@@ -58,12 +59,27 @@ static void BM_AVLTree_Append(benchmark::State& state) {
 
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
       data[idx].key = idx + 1;
-      avl_insert(&tree, &data[idx].node, avl_compare);
+      avl_insert(&tree, &data[idx].node, compare<kv_node_avl, struct avl_node>);
+    }
+  }
+}
+
+static void BM_RBTree_Append(benchmark::State& state) {
+  for (auto _ : state) {
+    struct rb_root tree;
+    struct kv_node_rb data[NUMBER_ELEMENTS];
+
+    rb_root_init(&tree, NULL);
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data[idx].key = idx + 1;
+      rbwrap_insert(&tree, &data[idx].node, compare<kv_node_rb, struct rb_node>);
     }
   }
 }
 
 BENCHMARK(BM_SplayTree_Append);
 BENCHMARK(BM_AVLTree_Append);
+BENCHMARK(BM_RBTree_Append);
 
 BENCHMARK_MAIN();
