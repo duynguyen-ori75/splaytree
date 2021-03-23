@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include <gtest/gtest.h>
 
 extern "C" {
@@ -52,6 +54,28 @@ TEST(SplayTree, SplayInsertAndSearch) {
     cur = splay_search_greater(&tree, &query.node, cmp_func);
     result = _get_entry(cur, data_node, node);
     expectedKey = (i % 2) ? i : i + 1;
+    ASSERT_EQ(result->key, expectedKey);
+  }
+}
+
+TEST(SplayTree, SplayInsertRandomly) {
+  data_node data[1000];
+  splay_tree tree;
+  splay_tree_init(&tree);
+  std::unordered_set<int> correct;
+
+  for(int i = 0; i < 1000; i ++) {
+    data[i].key = rand() % 10000;
+    correct.insert(data[i].key);
+    splay_insert(&tree, &data[i].node, cmp_func);
+  }
+
+  data_node query, *result;
+  splay_node *cur;
+  for (int expectedKey: correct) {
+    query.key = expectedKey;
+    cur = splay_search(&tree, &query.node, cmp_func);
+    result = _get_entry(cur, data_node, node);
     ASSERT_EQ(result->key, expectedKey);
   }
 }

@@ -12,7 +12,7 @@
 #define RANDOM_VAL      rand() % NUMBER_ELEMENTS + 1
 
 std::default_random_engine generator;
-std::binomial_distribution<int> distribution(100000);
+std::uniform_int_distribution<int> distribution(1, 2 * NUMBER_ELEMENTS);
 
 int values[NUMBER_ELEMENTS];
 
@@ -97,7 +97,7 @@ static void BM_SETSet_Append(benchmark::State& state) {
   }
 }
 
-static void BM_SplayTree_InsertNormalDistribution(benchmark::State& state) {
+static void BM_SplayTree_InsertRandom(benchmark::State& state) {
   for (auto _ : state) {
     struct splay_tree tree;
     struct kv_node data[NUMBER_ELEMENTS];
@@ -111,7 +111,7 @@ static void BM_SplayTree_InsertNormalDistribution(benchmark::State& state) {
   }
 }
 
-static void BM_AVLTree_InsertNormalDistribution(benchmark::State& state) {
+static void BM_AVLTree_InsertRandom(benchmark::State& state) {
   for (auto _ : state) {
     struct avl_tree tree;
     struct kv_node_avl data[NUMBER_ELEMENTS];
@@ -125,7 +125,7 @@ static void BM_AVLTree_InsertNormalDistribution(benchmark::State& state) {
   }
 }
 
-static void BM_RBTree_InsertNormalDistribution(benchmark::State& state) {
+static void BM_RBTree_InsertRandom(benchmark::State& state) {
   for (auto _ : state) {
     struct rb_root tree;
     struct kv_node_rb data[NUMBER_ELEMENTS];
@@ -139,7 +139,7 @@ static void BM_RBTree_InsertNormalDistribution(benchmark::State& state) {
   }
 }
 
-static void BM_STLSet_InsertNormalDistribution(benchmark::State& state) {
+static void BM_STLSet_InsertRandom(benchmark::State& state) {
   for (auto _ : state) {
     std::set<int> data;
 
@@ -267,10 +267,10 @@ BENCHMARK(BM_SplayTree_Append);
 BENCHMARK(BM_AVLTree_Append);
 BENCHMARK(BM_RBTree_Append);
 BENCHMARK(BM_SETSet_Append);
-BENCHMARK(BM_SplayTree_InsertNormalDistribution);
-BENCHMARK(BM_AVLTree_InsertNormalDistribution);
-BENCHMARK(BM_RBTree_InsertNormalDistribution);
-BENCHMARK(BM_STLSet_InsertNormalDistribution);
+BENCHMARK(BM_SplayTree_InsertRandom);
+BENCHMARK(BM_AVLTree_InsertRandom);
+BENCHMARK(BM_RBTree_InsertRandom);
+BENCHMARK(BM_STLSet_InsertRandom);
 BENCHMARK(BM_SplayTree_LoopSequentially);
 BENCHMARK(BM_AVLTree_LoopSequentially);
 BENCHMARK(BM_RBTree_LoopSequentially);

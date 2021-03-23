@@ -113,45 +113,39 @@ void splay_tree_init(struct splay_tree *tree) {
 void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   _init_splay_node(node);
 
-  if (tree->root) {
-    /**
-     * as splay tree was born for locality,
-     *  we should expect that the current root is very close to the newly-inserted node
-     * however, there are cases where the new node is very far from the root
-     *  therefore, we still need to splay a node to the root, but the frequency should be low
-     * I believe that the 80/20 rule is a good choice here - just a feeling
-     */
-    if (rand() % 10 > 8)
-      tree->root = _splay(tree->root, node, func);
-    int cmp = func(tree->root, node);
-    if (cmp == 0) return;
-    if (cmp > 0) {
-      node->right       = tree->root;
-      node->left        = tree->root->left;
-      tree->root->left  = NULL;
-#ifdef _SPLAY_SIBLING_POINTER
-      node->next        = tree->root;
-      node->prev        = tree->root->prev;
-      if (tree->root->prev) {
-        tree->root->prev->next = node;
-      }
-      tree->root->prev  = node;
-#endif
-    } else {
-      node->left        = tree->root;
-      node->right       = tree->root->right;
-      tree->root->right = NULL;
-#ifdef _SPLAY_SIBLING_POINTER
-      node->prev        = tree->root;
-      node->next        = tree->root->next;
-      if (tree->root->next) {
-        tree->root->next->prev = node;
-      }
-      tree->root->next  = node;
-#endif
-    }
+  if (!tree->root) {
+    tree->root = node;
+    return;
   }
 
+  tree->root = _splay(tree->root, node, func);
+  int cmp = func(tree->root, node);
+  if (cmp == 0) return;
+  if (cmp > 0) {
+    node->right       = tree->root;
+    node->left        = tree->root->left;
+    tree->root->left  = NULL;
+#ifdef _SPLAY_SIBLING_POINTER
+    node->next        = tree->root;
+    node->prev        = tree->root->prev;
+    if (tree->root->prev) {
+      tree->root->prev->next = node;
+    }
+    tree->root->prev  = node;
+#endif
+  } else {
+    node->left        = tree->root;
+    node->right       = tree->root->right;
+    tree->root->right = NULL;
+#ifdef _SPLAY_SIBLING_POINTER
+    node->prev        = tree->root;
+    node->next        = tree->root->next;
+    if (tree->root->next) {
+      tree->root->next->prev = node;
+    }
+    tree->root->next  = node;
+#endif
+  }
   tree->root = node;
 }
 
