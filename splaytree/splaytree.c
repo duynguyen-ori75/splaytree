@@ -227,13 +227,13 @@ struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_no
   return cur;
 }
 
-struct splay_node* splay_first(struct splay_tree *tree, bool to_splay) {
+struct splay_node* splay_first(struct splay_tree *tree) {
   if (!tree->root) return NULL;
   struct splay_node *p, *pp = NULL;
   for(p = tree->root; p->left; p = p->left) {
     pp = p;
   }
-  if (pp && to_splay) {
+  if (pp) {
     pp->left = p->right;
     p->right = tree->root;
     tree->root = p;
@@ -241,13 +241,13 @@ struct splay_node* splay_first(struct splay_tree *tree, bool to_splay) {
   return p;
 }
 
-struct splay_node* splay_last(struct splay_tree *tree, bool to_splay) {
+struct splay_node* splay_last(struct splay_tree *tree) {
   if (!tree->root) return NULL;
   struct splay_node *p, *pp = NULL;
   for(p = tree->root; p->right; p = p->right) {
     pp = p;
   }
-  if (pp && to_splay) {
+  if (pp) {
     pp->right = p->left;
     p->left = tree->root;
     tree->root = p;

@@ -93,7 +93,7 @@ TEST(SplayTree, SplayCursorOperator) {
     splay_insert(&tree, &data[i].node, cmp_func);
   }
 
-  splay_node *cur = splay_first(&tree, true);
+  splay_node *cur = splay_first(&tree);
   data_node *result = _get_entry(cur, data_node, node);
   ASSERT_EQ(cur, tree.root);
   ASSERT_EQ(cur->left, nullptr);
@@ -109,7 +109,7 @@ TEST(SplayTree, SplayCursorOperator) {
     ASSERT_EQ(result->key, i);
   }
 
-  cur = splay_last(&tree, true);
+  cur = splay_last(&tree);
   result = _get_entry(cur, data_node, node);
   ASSERT_EQ(cur, tree.root);
   ASSERT_EQ(cur->right, nullptr);

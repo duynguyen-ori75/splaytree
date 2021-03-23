@@ -148,6 +148,42 @@ static void BM_STLSet_InsertNormalDistribution(benchmark::State& state) {
   }
 }
 
+static void BM_SplayTree_LoopSequentially(benchmark::State& state) {
+  struct splay_tree tree;
+  struct kv_node data[NUMBER_ELEMENTS];
+
+  splay_tree_init(&tree);
+
+  for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+    data[idx].key = idx + 1;
+    splay_insert(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
+  }
+  for (auto _ : state) {
+    splay_node *cur = splay_first(&tree);
+    for(int idx = 1; idx < NUMBER_ELEMENTS; idx ++) {
+      cur = splay_next(&tree, cur, compare<kv_node, struct splay_node>);
+    }
+  }
+}
+
+static void BM_AVLTree_LoopSequentially(benchmark::State& state) {
+  struct avl_tree tree;
+  struct kv_node_avl data[NUMBER_ELEMENTS];
+
+  avl_init(&tree, NULL);
+
+  for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+    data[idx].key = idx + 1;
+    avl_insert(&tree, &data[idx].node, compare<kv_node_avl, struct avl_node>);
+  }
+  for (auto _ : state) {
+    avl_node *cur = avl_first(&tree);
+    for(int idx = 1; idx < NUMBER_ELEMENTS; idx ++) {
+      cur = avl_next(cur);
+    }
+  }
+}
+
 BENCHMARK(BM_SplayTree_Append);
 BENCHMARK(BM_AVLTree_Append);
 BENCHMARK(BM_RBTree_Append);
@@ -156,6 +192,8 @@ BENCHMARK(BM_SplayTree_InsertNormalDistribution);
 BENCHMARK(BM_AVLTree_InsertNormalDistribution);
 BENCHMARK(BM_RBTree_InsertNormalDistribution);
 BENCHMARK(BM_STLSet_InsertNormalDistribution);
+BENCHMARK(BM_SplayTree_LoopSequentially);
+BENCHMARK(BM_AVLTree_LoopSequentially);
 
 int main(int argc, char** argv)
 {

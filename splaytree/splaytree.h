@@ -64,8 +64,8 @@ void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func
 struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 struct splay_node* splay_search_lower(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func);
-struct splay_node* splay_first(struct splay_tree *tree, bool to_splay);
-struct splay_node* splay_last(struct splay_tree *tree, bool to_splay);
+struct splay_node* splay_first(struct splay_tree *tree);
+struct splay_node* splay_last(struct splay_tree *tree);
 struct splay_node* splay_prev(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 struct splay_node* splay_next(struct splay_tree *tree, struct splay_node *node, compare_func *func);
 

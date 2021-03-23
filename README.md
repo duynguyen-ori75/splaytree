@@ -91,7 +91,7 @@ CPU Caches:
 
 ### Insert result
 
-```
+```shell
 Benchmark                                      Time             CPU   Iterations
 --------------------------------------------------------------------------------
 BM_SplayTree_Append                      1063859 ns      1063843 ns          614
@@ -106,6 +106,8 @@ BM_STLSet_InsertNormalDistribution       3179226 ns      3179136 ns          224
 
 ## DOING
 
+- [ ] Add parent node to `struct SplayNode`
+  - This can improve `Next` & `Prev` performance
 - [ ] Compare it with other BST such as AVL tree
   - [x] Append workload
   - [x] Insert normal-distributed data
