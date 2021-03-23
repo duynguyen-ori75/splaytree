@@ -89,19 +89,32 @@ CPU Caches:
   L3 Unified 12288 KiB (x1)
 ```
 
-### Insert result
+### Insert
 
 ```shell
 Benchmark                                      Time             CPU   Iterations
 --------------------------------------------------------------------------------
-BM_SplayTree_Append                      1063859 ns      1063843 ns          614
-BM_AVLTree_Append                        6093468 ns      6093298 ns          111
-BM_RBTree_Append                        10684335 ns     10684150 ns           64
-BM_SETSet_Append                        11836129 ns     11835528 ns           57
-BM_SplayTree_InsertNormalDistribution    1508689 ns      1508672 ns          449
-BM_AVLTree_InsertNormalDistribution      4542861 ns      4542757 ns          155
-BM_RBTree_InsertNormalDistribution       4234119 ns      4234045 ns          163
-BM_STLSet_InsertNormalDistribution       3179226 ns      3179136 ns          224
+BM_SplayTree_Append                      1070687 ns      1070671 ns          616
+BM_AVLTree_Append                        6052282 ns      6052101 ns          110
+BM_RBTree_Append                        10331639 ns     10331078 ns           67
+BM_SETSet_Append                        11637510 ns     11637190 ns           59
+BM_SplayTree_InsertNormalDistribution    1480339 ns      1480310 ns          462
+BM_AVLTree_InsertNormalDistribution      4291937 ns      4291771 ns          163
+BM_RBTree_InsertNormalDistribution       4239753 ns      4239613 ns          165
+BM_STLSet_InsertNormalDistribution       3142497 ns      3142363 ns          224
+```
+
+### Read
+
+```shell
+Benchmark                                      Time             CPU   Iterations
+--------------------------------------------------------------------------------
+BM_SplayTree_LoopSequentially             169402 ns       169399 ns         4015
+BM_AVLTree_LoopSequentially               194693 ns       194689 ns         3585
+BM_RBTree_LoopSequentially                416551 ns       416548 ns         1670
+BM_SplayTree_SearchRandomly             20572787 ns     20571949 ns           34
+BM_AVLTree_SearchRandomly               18230235 ns     18229793 ns           38
+BM_RBTree_SearchRandomly                17461417 ns     17461152 ns           40
 ```
 
 ## DOING
@@ -111,8 +124,8 @@ BM_STLSet_InsertNormalDistribution       3179226 ns      3179136 ns          224
 - [ ] Compare it with other BST such as AVL tree
   - [x] Append workload
   - [x] Insert normal-distributed data
-  - [ ] Loop sequentially
-  - [ ] Random access workload
+  - [x] Loop sequentially
+  - [x] Random access workload
   - [ ] Read normal-distributed data
   - [ ] Delete sequentially
   - [ ] Delete randomly

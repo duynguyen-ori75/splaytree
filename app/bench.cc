@@ -9,6 +9,7 @@
 #include "rbwrap.h"
 
 #define NUMBER_ELEMENTS 100000
+#define RANDOM_VAL      rand() % NUMBER_ELEMENTS + 1
 
 std::default_random_engine generator;
 std::binomial_distribution<int> distribution(100000);
@@ -184,6 +185,84 @@ static void BM_AVLTree_LoopSequentially(benchmark::State& state) {
   }
 }
 
+static void BM_RBTree_LoopSequentially(benchmark::State& state) {
+  struct rb_root tree;
+  struct kv_node_rb data[NUMBER_ELEMENTS];
+
+  rb_root_init(&tree, NULL);
+
+  for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+    data[idx].key = idx + 1;
+    rbwrap_insert(&tree, &data[idx].node, compare<kv_node_rb, struct rb_node>);
+  }
+  for (auto _ : state) {
+    rb_node *cur = rb_first(&tree);
+    for(int idx = 1; idx < NUMBER_ELEMENTS; idx ++) {
+      cur = rb_next(cur);
+    }
+  }
+}
+
+static void BM_SplayTree_SearchRandomly(benchmark::State& state) {
+  struct splay_tree tree;
+  struct kv_node data[NUMBER_ELEMENTS];
+
+  splay_tree_init(&tree);
+
+  for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+    data[idx].key = idx + 1;
+    splay_insert(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
+  }
+
+  for (auto _ : state) {
+    kv_node query;
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      query.key = RANDOM_VAL;
+      auto cur = splay_search(&tree, &query.node, compare<kv_node, struct splay_node>);
+    }
+  }
+}
+
+static void BM_AVLTree_SearchRandomly(benchmark::State& state) {
+  struct avl_tree tree;
+  struct kv_node_avl data[NUMBER_ELEMENTS];
+
+  avl_init(&tree, NULL);
+
+  for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+    data[idx].key = idx + 1;
+    avl_insert(&tree, &data[idx].node, compare<kv_node_avl, struct avl_node>);
+  }
+
+  for (auto _ : state) {
+    kv_node_avl query;
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      query.key = RANDOM_VAL;
+      auto cur = avl_search(&tree, &query.node, compare<kv_node_avl, struct avl_node>);
+    }
+  }
+}
+
+static void BM_RBTree_SearchRandomly(benchmark::State& state) {
+  struct rb_root tree;
+  struct kv_node_rb data[NUMBER_ELEMENTS];
+
+  rb_root_init(&tree, NULL);
+
+  for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+    data[idx].key = idx + 1;
+    rbwrap_insert(&tree, &data[idx].node, compare<kv_node_rb, struct rb_node>);
+  }
+
+  for (auto _ : state) {
+    kv_node_rb query;
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      query.key = RANDOM_VAL;
+      auto cur = rbwrap_search(&tree, &query.node, compare<kv_node_rb, struct rb_node>);
+    }
+  }
+}
+
 BENCHMARK(BM_SplayTree_Append);
 BENCHMARK(BM_AVLTree_Append);
 BENCHMARK(BM_RBTree_Append);
@@ -194,6 +273,10 @@ BENCHMARK(BM_RBTree_InsertNormalDistribution);
 BENCHMARK(BM_STLSet_InsertNormalDistribution);
 BENCHMARK(BM_SplayTree_LoopSequentially);
 BENCHMARK(BM_AVLTree_LoopSequentially);
+BENCHMARK(BM_RBTree_LoopSequentially);
+BENCHMARK(BM_SplayTree_SearchRandomly);
+BENCHMARK(BM_AVLTree_SearchRandomly);
+BENCHMARK(BM_RBTree_SearchRandomly);
 
 int main(int argc, char** argv)
 {
