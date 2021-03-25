@@ -10,7 +10,7 @@ LDFLAGS = -lgtest -lbenchmark -lpthread
 CFLAGS = \
 	-g -D_GNU_SOURCE \
 	-I. -I./splaytree \
-	-O2 -Wall \
+	-O2 -Wall -Wno-unused-variable \
 	-D_SPLAY_SIBLING_POINTER \
 	-D_AVL_NEXT_POINTER
 

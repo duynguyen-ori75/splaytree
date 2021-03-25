@@ -9,7 +9,6 @@
 #include "rbwrap.h"
 
 #define NUMBER_ELEMENTS 100000
-#define RANDOM_VAL      rand() % NUMBER_ELEMENTS + 1
 
 std::default_random_engine generator;
 std::uniform_int_distribution<int> distribution(1, 2 * NUMBER_ELEMENTS);
@@ -217,7 +216,7 @@ static void BM_SplayTree_SearchRandomly(benchmark::State& state) {
   for (auto _ : state) {
     kv_node query;
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
-      query.key = RANDOM_VAL;
+      query.key = values[idx];
       auto cur = splay_search(&tree, &query.node, compare<kv_node, struct splay_node>);
     }
   }
@@ -237,7 +236,7 @@ static void BM_AVLTree_SearchRandomly(benchmark::State& state) {
   for (auto _ : state) {
     kv_node_avl query;
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
-      query.key = RANDOM_VAL;
+      query.key = values[idx];
       auto cur = avl_search(&tree, &query.node, compare<kv_node_avl, struct avl_node>);
     }
   }
@@ -257,8 +256,154 @@ static void BM_RBTree_SearchRandomly(benchmark::State& state) {
   for (auto _ : state) {
     kv_node_rb query;
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
-      query.key = RANDOM_VAL;
+      query.key = values[idx];
       auto cur = rbwrap_search(&tree, &query.node, compare<kv_node_rb, struct rb_node>);
+    }
+  }
+}
+
+static void BM_SplayTree_AppendAndDeleteSequentially(benchmark::State& state) {
+  struct splay_tree tree;
+  struct kv_node data[NUMBER_ELEMENTS];
+
+  for (auto _ : state) {
+    splay_tree_init(&tree);
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data[idx].key = idx + 1;
+      splay_insert(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
+    }
+
+    for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
+      splay_delete(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
+    }
+  }
+}
+
+static void BM_AVLTree_AppendAndDeleteSequentially(benchmark::State& state) {
+  struct avl_tree tree;
+  struct kv_node_avl data[NUMBER_ELEMENTS];
+
+  for (auto _ : state) {
+    avl_init(&tree, NULL);
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data[idx].key = idx + 1;
+      avl_insert(&tree, &data[idx].node, compare<kv_node_avl, struct avl_node>);
+    }
+
+    for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
+      avl_remove(&tree, &data[idx].node);
+    }
+  }
+}
+
+static void BM_RBTree_AppendAndDeleteSequentially(benchmark::State& state) {
+  struct rb_root tree;
+  struct kv_node_rb data[NUMBER_ELEMENTS];
+
+  for (auto _ : state) {
+    rb_root_init(&tree, NULL);
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data[idx].key = idx + 1;
+      rbwrap_insert(&tree, &data[idx].node, compare<kv_node_rb, struct rb_node>);
+    }
+
+    for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
+      rb_erase(&data[idx].node, &tree);
+    }
+  }
+}
+
+static void BM_STLSet_AppendAndDeleteSequentially(benchmark::State& state) {
+  std::set<int> data;
+
+  for (auto _ : state) {
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data.insert(idx + 1);
+    }
+
+    for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
+      data.erase(idx + 1);
+    }
+  }
+}
+
+static void BM_SplayTree_AppendAndDeleteRandomly(benchmark::State& state) {
+  struct splay_tree tree;
+  struct kv_node data[NUMBER_ELEMENTS];
+
+  for (auto _ : state) {
+    splay_tree_init(&tree);
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data[idx].key = idx + 1;
+      splay_insert(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
+    }
+
+    kv_node query;
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      query.key = values[idx];
+      splay_delete(&tree, &query.node, compare<kv_node, struct splay_node>);
+    }
+  }
+}
+
+static void BM_AVLTree_AppendAndDeleteRandomly(benchmark::State& state) {
+  struct avl_tree tree;
+  struct kv_node_avl data[NUMBER_ELEMENTS];
+
+  for (auto _ : state) {
+    avl_init(&tree, NULL);
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data[idx].key = idx + 1;
+      avl_insert(&tree, &data[idx].node, compare<kv_node_avl, struct avl_node>);
+    }
+
+    kv_node_avl query;
+    avl_node *cursor;
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      query.key = values[idx];
+      cursor = avl_search(&tree, &query.node, compare<kv_node_avl, struct avl_node>);
+      avl_remove(&tree, cursor);
+    }
+  }
+}
+
+static void BM_RBTree_AppendAndDeleteRandomly(benchmark::State& state) {
+  struct rb_root tree;
+  struct kv_node_rb data[NUMBER_ELEMENTS];
+
+  for (auto _ : state) {
+    rb_root_init(&tree, NULL);
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data[idx].key = idx + 1;
+      rbwrap_insert(&tree, &data[idx].node, compare<kv_node_rb, struct rb_node>);
+    }
+
+    kv_node_rb query;
+    rb_node *cursor;
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      query.key = values[idx];
+      cursor = rbwrap_search(&tree, &query.node, compare<kv_node_rb, struct rb_node>);
+      rb_erase(cursor, &tree);
+    }
+  }
+}
+
+static void BM_STLSet_AppendAndDeleteRandomly(benchmark::State& state) {
+  std::set<int> data;
+
+  for (auto _ : state) {
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data.insert(idx + 1);
+    }
+
+    for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
+      data.erase(values[idx]);
     }
   }
 }
@@ -277,6 +422,14 @@ BENCHMARK(BM_RBTree_LoopSequentially);
 BENCHMARK(BM_SplayTree_SearchRandomly);
 BENCHMARK(BM_AVLTree_SearchRandomly);
 BENCHMARK(BM_RBTree_SearchRandomly);
+BENCHMARK(BM_SplayTree_AppendAndDeleteSequentially);
+BENCHMARK(BM_AVLTree_AppendAndDeleteSequentially);
+BENCHMARK(BM_RBTree_AppendAndDeleteSequentially);
+BENCHMARK(BM_STLSet_AppendAndDeleteSequentially);
+BENCHMARK(BM_SplayTree_AppendAndDeleteRandomly);
+BENCHMARK(BM_AVLTree_AppendAndDeleteRandomly);
+BENCHMARK(BM_RBTree_AppendAndDeleteRandomly);
+BENCHMARK(BM_STLSet_AppendAndDeleteRandomly);
 
 int main(int argc, char** argv)
 {

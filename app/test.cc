@@ -91,18 +91,37 @@ TEST(SplayTree, SplayRemove) {
   }
 
   data_node query, *result;
-  splay_node *cur;
+  splay_node *cur, *nextCur, *prevCur;
   for(int i = 0; i < 100; i ++) {
     query.key = rand() % 200;
+    cur = splay_search(&tree, &query.node, cmp_func);
+    prevCur = splay_prev(&tree, cur, cmp_func);
+    nextCur = splay_next(&tree, cur, cmp_func);
 
     splay_delete(&tree, &query.node, cmp_func);
     cur = splay_search(&tree, &query.node, cmp_func);
     ASSERT_EQ(cur, nullptr);
 
+    if (prevCur) {
+      result = _get_entry(prevCur, data_node, node);
+      ASSERT_LT(result->key, query.key);
+    }
+
+    if (nextCur) {
+      result = _get_entry(nextCur, data_node, node);
+      ASSERT_GT(result->key, query.key);
+    }
+
     cur = splay_search_greater(&tree, &query.node, cmp_func);
     if (cur) {
       result = _get_entry(cur, data_node, node);
       ASSERT_GT(result->key, query.key);
+    }
+
+    cur = splay_search_lower(&tree, &query.node, cmp_func);
+    if (cur) {
+      result = _get_entry(cur, data_node, node);
+      ASSERT_LT(result->key, query.key);
     }
   }
 }

@@ -217,6 +217,7 @@ static void __rb_erase_color(struct rb_node *node, struct rb_node *parent,
 
 void rb_erase(struct rb_node *node, struct rb_root *root)
 {
+  if (!node) return;
 	struct rb_node *child, *parent;
 	int color;
 
