@@ -1,6 +1,7 @@
 #include <set>
 #include <random>
 #include <iostream>
+#include <chrono>
 
 #include <benchmark/benchmark.h>
 
@@ -262,7 +263,7 @@ static void BM_RBTree_SearchRandomly(benchmark::State& state) {
   }
 }
 
-static void BM_SplayTree_AppendAndDeleteSequentially(benchmark::State& state) {
+static void BM_SplayTree_DeleteSequentially(benchmark::State& state) {
   struct splay_tree tree;
   struct kv_node data[NUMBER_ELEMENTS];
 
@@ -274,13 +275,18 @@ static void BM_SplayTree_AppendAndDeleteSequentially(benchmark::State& state) {
       splay_insert(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
       splay_delete(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
-static void BM_AVLTree_AppendAndDeleteSequentially(benchmark::State& state) {
+static void BM_AVLTree_DeleteSequentially(benchmark::State& state) {
   struct avl_tree tree;
   struct kv_node_avl data[NUMBER_ELEMENTS];
 
@@ -292,13 +298,18 @@ static void BM_AVLTree_AppendAndDeleteSequentially(benchmark::State& state) {
       avl_insert(&tree, &data[idx].node, compare<kv_node_avl, struct avl_node>);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
       avl_remove(&tree, &data[idx].node);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
-static void BM_RBTree_AppendAndDeleteSequentially(benchmark::State& state) {
+static void BM_RBTree_DeleteSequentially(benchmark::State& state) {
   struct rb_root tree;
   struct kv_node_rb data[NUMBER_ELEMENTS];
 
@@ -310,13 +321,18 @@ static void BM_RBTree_AppendAndDeleteSequentially(benchmark::State& state) {
       rbwrap_insert(&tree, &data[idx].node, compare<kv_node_rb, struct rb_node>);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
       rb_erase(&data[idx].node, &tree);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
-static void BM_STLSet_AppendAndDeleteSequentially(benchmark::State& state) {
+static void BM_STLSet_DeleteSequentially(benchmark::State& state) {
   std::set<int> data;
 
   for (auto _ : state) {
@@ -324,13 +340,18 @@ static void BM_STLSet_AppendAndDeleteSequentially(benchmark::State& state) {
       data.insert(idx + 1);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     for(int idx = NUMBER_ELEMENTS - 1; idx >= 0; idx --) {
       data.erase(idx + 1);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
-static void BM_SplayTree_AppendAndDeleteRandomly(benchmark::State& state) {
+static void BM_SplayTree_DeleteRandomly(benchmark::State& state) {
   struct splay_tree tree;
   struct kv_node data[NUMBER_ELEMENTS];
 
@@ -342,15 +363,20 @@ static void BM_SplayTree_AppendAndDeleteRandomly(benchmark::State& state) {
       splay_insert(&tree, &data[idx].node, compare<kv_node, struct splay_node>);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     kv_node query;
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
       query.key = values[idx];
       splay_delete(&tree, &query.node, compare<kv_node, struct splay_node>);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
-static void BM_AVLTree_AppendAndDeleteRandomly(benchmark::State& state) {
+static void BM_AVLTree_DeleteRandomly(benchmark::State& state) {
   struct avl_tree tree;
   struct kv_node_avl data[NUMBER_ELEMENTS];
 
@@ -362,6 +388,7 @@ static void BM_AVLTree_AppendAndDeleteRandomly(benchmark::State& state) {
       avl_insert(&tree, &data[idx].node, compare<kv_node_avl, struct avl_node>);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     kv_node_avl query;
     avl_node *cursor;
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
@@ -369,10 +396,14 @@ static void BM_AVLTree_AppendAndDeleteRandomly(benchmark::State& state) {
       cursor = avl_search(&tree, &query.node, compare<kv_node_avl, struct avl_node>);
       avl_remove(&tree, cursor);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
-static void BM_RBTree_AppendAndDeleteRandomly(benchmark::State& state) {
+static void BM_RBTree_DeleteRandomly(benchmark::State& state) {
   struct rb_root tree;
   struct kv_node_rb data[NUMBER_ELEMENTS];
 
@@ -384,6 +415,7 @@ static void BM_RBTree_AppendAndDeleteRandomly(benchmark::State& state) {
       rbwrap_insert(&tree, &data[idx].node, compare<kv_node_rb, struct rb_node>);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     kv_node_rb query;
     rb_node *cursor;
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
@@ -391,10 +423,14 @@ static void BM_RBTree_AppendAndDeleteRandomly(benchmark::State& state) {
       cursor = rbwrap_search(&tree, &query.node, compare<kv_node_rb, struct rb_node>);
       rb_erase(cursor, &tree);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
-static void BM_STLSet_AppendAndDeleteRandomly(benchmark::State& state) {
+static void BM_STLSet_DeleteRandomly(benchmark::State& state) {
   std::set<int> data;
 
   for (auto _ : state) {
@@ -402,9 +438,14 @@ static void BM_STLSet_AppendAndDeleteRandomly(benchmark::State& state) {
       data.insert(idx + 1);
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     for(int idx = 0; idx < NUMBER_ELEMENTS; idx ++) {
       data.erase(values[idx]);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+
+    state.SetIterationTime(elapsed_seconds.count());
   }
 }
 
@@ -422,14 +463,14 @@ BENCHMARK(BM_RBTree_LoopSequentially);
 BENCHMARK(BM_SplayTree_SearchRandomly);
 BENCHMARK(BM_AVLTree_SearchRandomly);
 BENCHMARK(BM_RBTree_SearchRandomly);
-BENCHMARK(BM_SplayTree_AppendAndDeleteSequentially);
-BENCHMARK(BM_AVLTree_AppendAndDeleteSequentially);
-BENCHMARK(BM_RBTree_AppendAndDeleteSequentially);
-BENCHMARK(BM_STLSet_AppendAndDeleteSequentially);
-BENCHMARK(BM_SplayTree_AppendAndDeleteRandomly);
-BENCHMARK(BM_AVLTree_AppendAndDeleteRandomly);
-BENCHMARK(BM_RBTree_AppendAndDeleteRandomly);
-BENCHMARK(BM_STLSet_AppendAndDeleteRandomly);
+BENCHMARK(BM_SplayTree_DeleteSequentially)->UseManualTime();
+BENCHMARK(BM_AVLTree_DeleteSequentially)->UseManualTime();
+BENCHMARK(BM_RBTree_DeleteSequentially)->UseManualTime();
+BENCHMARK(BM_STLSet_DeleteSequentially)->UseManualTime();
+BENCHMARK(BM_SplayTree_DeleteRandomly)->UseManualTime();
+BENCHMARK(BM_AVLTree_DeleteRandomly)->UseManualTime();
+BENCHMARK(BM_RBTree_DeleteRandomly)->UseManualTime();
+BENCHMARK(BM_STLSet_DeleteRandomly)->UseManualTime();
 
 int main(int argc, char** argv)
 {

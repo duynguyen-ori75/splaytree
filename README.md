@@ -1,6 +1,7 @@
 # Splay tree
 
-A highly-performant, zero-allocation, generic Top-down Splay tree container C implementation
+An extremely-performant, zero-allocation, generic Top-down Splay tree container C implementation
+
 See [Benchmark](README.md#Benchmark) for more information
 
 ## Author
@@ -19,7 +20,7 @@ make
 
 (refer to [app/example.c](app/example.c))
 
-Below example describes how to use the splay tree as an ordered set of int
+The below example describes how to use the splay tree as an ordered set of int
 
 ```C
 struct set_node {
@@ -93,48 +94,47 @@ CPU Caches:
 ### Insert
 
 ```shell
------------------------------------------------------------------------------------
-Benchmark                                         Time             CPU   Iterations
------------------------------------------------------------------------------------
-BM_SplayTree_Append                          893396 ns       893380 ns          745
-BM_AVLTree_Append                           6732141 ns      6731827 ns          108
-BM_RBTree_Append                           11641723 ns     11640964 ns           60
-BM_SETSet_Append                           13476920 ns     13474503 ns           49
-BM_SplayTree_InsertRandom                  30806665 ns     30804999 ns           24
-BM_AVLTree_InsertRandom                    21056514 ns     21055038 ns           36
-BM_RBTree_InsertRandom                     18100314 ns     18099266 ns           33
-BM_STLSet_InsertRandom                     21124374 ns     21123272 ns           29
+--------------------------------------------------------------------------------------
+Benchmark                                            Time             CPU   Iterations
+--------------------------------------------------------------------------------------
+BM_SplayTree_Append                            1017354 ns      1017263 ns          663
+BM_AVLTree_Append                              6918081 ns      6917612 ns           96
+BM_RBTree_Append                              10961181 ns     10960508 ns           63
+BM_SETSet_Append                              13630910 ns     13630563 ns           49
+BM_SplayTree_InsertRandom                     31168269 ns     31165379 ns           23
+BM_AVLTree_InsertRandom                       24851447 ns     24850110 ns           33
+BM_RBTree_InsertRandom                        18365015 ns     18358429 ns           35
+BM_STLSet_InsertRandom                        26893658 ns     26891748 ns           28
 ```
 
 ### Read
 
 ```shell
------------------------------------------------------------------------------------
-Benchmark                                         Time             CPU   Iterations
------------------------------------------------------------------------------------
-BM_SplayTree_LoopSequentially                303221 ns       303212 ns         3146
-BM_AVLTree_LoopSequentially                  257261 ns       257235 ns         2597
-BM_RBTree_LoopSequentially                   621691 ns       621688 ns         1162
-BM_SplayTree_SearchRandomly                12602530 ns     12602084 ns           54
-BM_AVLTree_SearchRandomly                  18538304 ns     18537981 ns           50
-BM_RBTree_SearchRandomly                   25190172 ns     25188291 ns           26
-
+--------------------------------------------------------------------------------------
+Benchmark                                            Time             CPU   Iterations
+--------------------------------------------------------------------------------------
+BM_SplayTree_LoopSequentially                   250616 ns       250582 ns         2364
+BM_AVLTree_LoopSequentially                     405245 ns       405237 ns         2381
+BM_RBTree_LoopSequentially                      572293 ns       572270 ns         1295
+BM_SplayTree_SearchRandomly                   15944143 ns     15939557 ns           52
+BM_AVLTree_SearchRandomly                     15260678 ns     15259896 ns           43
+BM_RBTree_SearchRandomly                      16419298 ns     16418330 ns           42
 ```
 
 ### Delete
 
 ```shell
------------------------------------------------------------------------------------
-Benchmark                                         Time             CPU   Iterations
------------------------------------------------------------------------------------
-BM_SplayTree_AppendAndDeleteSequentially    2803788 ns      2803400 ns          341
-BM_AVLTree_AppendAndDeleteSequentially      8889289 ns      8888874 ns           83
-BM_RBTree_AppendAndDeleteSequentially      12369922 ns     12369579 ns           56
-BM_STLSet_AppendAndDeleteSequentially      18282490 ns     18282198 ns           31
-BM_SplayTree_AppendAndDeleteRandomly       25137365 ns     25135925 ns           44
-BM_AVLTree_AppendAndDeleteRandomly         23279374 ns     23278243 ns           26
-BM_RBTree_AppendAndDeleteRandomly          26932176 ns     26931465 ns           27
-BM_STLSet_AppendAndDeleteRandomly          22129408 ns     22127794 ns           30
+--------------------------------------------------------------------------------------
+Benchmark                                            Time             CPU   Iterations
+--------------------------------------------------------------------------------------
+BM_SplayTree_DeleteSequentially/manual_time     969269 ns      1986797 ns          689
+BM_AVLTree_DeleteSequentially/manual_time      2159975 ns      8794835 ns          309
+BM_RBTree_DeleteSequentially/manual_time       1595580 ns     12835528 ns          454
+BM_STLSet_DeleteSequentially/manual_time       6897836 ns     18574547 ns          100
+BM_SplayTree_DeleteRandomly/manual_time       16290044 ns     17275631 ns           41
+BM_AVLTree_DeleteRandomly/manual_time         17672245 ns     24342404 ns           38
+BM_RBTree_DeleteRandomly/manual_time          15505911 ns     26651997 ns           46
+BM_STLSet_DeleteRandomly/manual_time          15731303 ns     24006003 ns           39
 ```
 
 ## DOING
