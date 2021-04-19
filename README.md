@@ -140,4 +140,4 @@ BM_STLSet_DeleteRandomly/manual_time          15731303 ns     24006003 ns       
 ## DOING
 
 - [ ] Add parent node to `struct SplayNode`
-  - This can improve `Next` & `Prev` performance
+  - This may improve `Next` & `Prev` performance

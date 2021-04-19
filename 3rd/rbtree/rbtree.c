@@ -221,6 +221,11 @@ void rb_erase(struct rb_node *node, struct rb_root *root)
 	struct rb_node *child, *parent;
 	int color;
 
+#ifdef _RB_NEXT_POINTER
+    if (node->prev) node->prev->next = node->next;
+    if (node->next) node->next->prev = node->prev;
+#endif
+
 	if (!node->rb_left)
 		child = node->rb_right;
 	else if (!node->rb_right)
@@ -391,6 +396,10 @@ struct rb_node *rb_next(const struct rb_node *node)
 	if (rb_parent(node) == node)
 		return NULL;
 
+#ifdef _RB_NEXT_POINTER
+  return node->next;
+#endif
+
 	/* If we have a right-hand child, go down and then left as far
 	   as we can. */
 	if (node->rb_right) {
@@ -419,6 +428,10 @@ struct rb_node *rb_prev(const struct rb_node *node)
 
 	if (rb_parent(node) == node)
 		return NULL;
+
+#ifdef _RB_NEXT_POINTER
+  return node->prev;
+#endif
 
 	/* If we have a left-hand child, go down and then right as far
 	   as we can. */

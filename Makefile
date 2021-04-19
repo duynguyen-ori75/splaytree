@@ -12,20 +12,21 @@ CFLAGS = \
 	-I. -I./splaytree \
 	-O2 -Wall -Wno-unused-variable \
 	-D_SPLAY_SIBLING_POINTER \
-	-D_AVL_NEXT_POINTER
+	-D_AVL_NEXT_POINTER \
+	-D_RB_NEXT_POINTER
 
 CXXFLAGS = $(CFLAGS) --std=c++11
 
 all: $(PROGRAMS)
 
 example:
-	$(CC)  $(CFLAGS) app/example.c $(SRC) -o $@ $(LDFLAGS)
+	$(CC)  $(CFLAGS) 		app/example.c $(SRC) -o $@ $(LDFLAGS)
 
 test: clean
-	$(CXX) $(CXXFLAGS) app/test.cc $(SRC) -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) 	app/test.cc $(SRC) $(3RD_SOURCES) $(3RD_INCLUDES) -o $@ $(LDFLAGS)
 
 benchmark: clean
-	$(CXX) $(CXXFLAGS) app/bench.cc $(SRC) $(3RD_SOURCES) $(3RD_INCLUDES) -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) 	app/bench.cc $(SRC) $(3RD_SOURCES) $(3RD_INCLUDES) -o $@ $(LDFLAGS)
 
 clean:
 	rm -rf $(PROGRAMS) ./*.o ./*.so

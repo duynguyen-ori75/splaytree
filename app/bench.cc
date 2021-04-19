@@ -40,7 +40,6 @@ template <typename T, typename T2>
 inline int compare(T2 *lhs, T2 *rhs) {
   T *aa = _get_entry(lhs, T, node);
   T *bb = _get_entry(rhs, T, node);
-  if (aa->key == bb->key) return 0;
   return aa->key - bb->key;
 }
 

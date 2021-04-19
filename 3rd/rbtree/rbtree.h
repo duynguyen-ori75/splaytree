@@ -108,6 +108,9 @@ struct rb_node
 #define	RB_BLACK	1
 	struct rb_node *rb_right;
 	struct rb_node *rb_left;
+#ifdef _RB_NEXT_POINTER
+  struct rb_node *prev, *next;
+#endif
 };
 //__attribute__((aligned(sizeof(long))));
     /* The alignment might seem pointless, but allegedly CRIS needs it */
@@ -144,6 +147,9 @@ static inline void rb_root_init(struct rb_root *root, struct rb_node *node)
 		node->rb_parent_color = RB_BLACK; /* black, no parent */
 		node->rb_left  = NULL;
 		node->rb_right = NULL;
+#ifdef _RB_NEXT_POINTER
+    node->prev = node->next = NULL;
+#endif
 	}
 }
 
@@ -158,6 +164,9 @@ static inline void rb_init_node(struct rb_node *rb)
 	rb->rb_parent_color = 0;
 	rb->rb_right = NULL;
 	rb->rb_left = NULL;
+#ifdef _RB_NEXT_POINTER
+  rb->prev = rb->next = NULL;
+#endif
 	RB_CLEAR_NODE(rb);
 }
 
@@ -187,7 +196,9 @@ static inline void rb_link_node(struct rb_node * node, struct rb_node * parent,
 {
 	node->rb_parent_color = (unsigned long )parent;
 	node->rb_left = node->rb_right = NULL;
-
+#ifdef _RB_NEXT_POINTER
+  node->prev = node->next = NULL;
+#endif
 	*rb_link = node;
 }
 
