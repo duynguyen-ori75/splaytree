@@ -97,14 +97,14 @@ CPU Caches:
 --------------------------------------------------------------------------------------
 Benchmark                                            Time             CPU   Iterations
 --------------------------------------------------------------------------------------
-BM_SplayTree_Append                            1017354 ns      1017263 ns          663
-BM_AVLTree_Append                              6918081 ns      6917612 ns           96
-BM_RBTree_Append                              10961181 ns     10960508 ns           63
-BM_SETSet_Append                              13630910 ns     13630563 ns           49
-BM_SplayTree_InsertRandom                     31168269 ns     31165379 ns           23
-BM_AVLTree_InsertRandom                       24851447 ns     24850110 ns           33
-BM_RBTree_InsertRandom                        18365015 ns     18358429 ns           35
-BM_STLSet_InsertRandom                        26893658 ns     26891748 ns           28
+BM_SplayTree_Append                             830776 ns       830315 ns          787
+BM_AVLTree_Append                              6341931 ns      6323088 ns          109
+BM_RBTree_Append                              10318031 ns     10317710 ns           66
+BM_SETSet_Append                              12867489 ns     12866331 ns           52
+BM_SplayTree_InsertRandom                     24312953 ns     24312061 ns           29
+BM_AVLTree_InsertRandom                       16879571 ns     16879077 ns           45
+BM_RBTree_InsertRandom                        15648496 ns     15647667 ns           45
+BM_STLSet_InsertRandom                        15884286 ns     15883431 ns           44
 ```
 
 ### Read
@@ -113,12 +113,12 @@ BM_STLSet_InsertRandom                        26893658 ns     26891748 ns       
 --------------------------------------------------------------------------------------
 Benchmark                                            Time             CPU   Iterations
 --------------------------------------------------------------------------------------
-BM_SplayTree_LoopSequentially                   250616 ns       250582 ns         2364
-BM_AVLTree_LoopSequentially                     405245 ns       405237 ns         2381
-BM_RBTree_LoopSequentially                      572293 ns       572270 ns         1295
-BM_SplayTree_SearchRandomly                   15944143 ns     15939557 ns           52
-BM_AVLTree_SearchRandomly                     15260678 ns     15259896 ns           43
-BM_RBTree_SearchRandomly                      16419298 ns     16418330 ns           42
+BM_SplayTree_LoopSequentially                   187054 ns       187039 ns         3925
+BM_AVLTree_LoopSequentially                     212804 ns       212792 ns         2693
+BM_RBTree_LoopSequentially                      195317 ns       195311 ns         3498
+BM_SplayTree_SearchRandomly                   10500778 ns     10500449 ns           62
+BM_AVLTree_SearchRandomly                     11503245 ns     11502942 ns           59
+BM_RBTree_SearchRandomly                      13729135 ns     13728468 ns           50
 ```
 
 ### Delete
@@ -127,14 +127,14 @@ BM_RBTree_SearchRandomly                      16419298 ns     16418330 ns       
 --------------------------------------------------------------------------------------
 Benchmark                                            Time             CPU   Iterations
 --------------------------------------------------------------------------------------
-BM_SplayTree_DeleteSequentially/manual_time     969269 ns      1986797 ns          689
-BM_AVLTree_DeleteSequentially/manual_time      2159975 ns      8794835 ns          309
-BM_RBTree_DeleteSequentially/manual_time       1595580 ns     12835528 ns          454
-BM_STLSet_DeleteSequentially/manual_time       6897836 ns     18574547 ns          100
-BM_SplayTree_DeleteRandomly/manual_time       16290044 ns     17275631 ns           41
-BM_AVLTree_DeleteRandomly/manual_time         17672245 ns     24342404 ns           38
-BM_RBTree_DeleteRandomly/manual_time          15505911 ns     26651997 ns           46
-BM_STLSet_DeleteRandomly/manual_time          15731303 ns     24006003 ns           39
+BM_SplayTree_DeleteSequentially/manual_time     626204 ns      1432835 ns         1090
+BM_AVLTree_DeleteSequentially/manual_time      1076986 ns      7078598 ns          636
+BM_RBTree_DeleteSequentially/manual_time        919476 ns     11364359 ns          816
+BM_STLSet_DeleteSequentially/manual_time       5635167 ns     14522470 ns          100
+BM_SplayTree_DeleteRandomly/manual_time       12537206 ns     13379025 ns           55
+BM_AVLTree_DeleteRandomly/manual_time         13497176 ns     19570971 ns           55
+BM_RBTree_DeleteRandomly/manual_time          13382582 ns     23816548 ns           53
+BM_STLSet_DeleteRandomly/manual_time          11097296 ns     16613821 ns           60
 ```
 
 ## DOING

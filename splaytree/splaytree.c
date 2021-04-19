@@ -2,7 +2,7 @@
 Copyright (C) 2021-present Duy Nguyen <duynguyen.ori75@gmail.com>
 All rights reserved.
 
-Last modification: Mar 14, 2021
+Last modification: Apr 21, 2021
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -61,7 +61,8 @@ INLINE void _init_splay_node(struct splay_node* p) {
 
 struct splay_node *_splay(struct splay_node *root,
                           struct splay_node *query,
-                          compare_func *func) {
+                          compare_func *func,
+                          int *cmpRet) {
   if (!root) return root;
   struct splay_node N;
   N.left = N.right = NULL;
@@ -69,10 +70,10 @@ struct splay_node *_splay(struct splay_node *root,
   left_t = right_t = &N;
 
   for (;;) {
-    int cmp = func(root, query);
-    if (cmp == 0) break;
+    *cmpRet = func(root, query);
+    if (*cmpRet == 0) break;
 
-    if (cmp > 0) {
+    if (*cmpRet > 0) {
       if (!root->left) break;
 
       if (func(root->left, query) > 0) {
@@ -118,8 +119,8 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func
     return;
   }
 
-  tree->root = _splay(tree->root, node, func);
-  int cmp = func(tree->root, node);
+  int cmp = 0;
+  tree->root = _splay(tree->root, node, func, &cmp);
   if (cmp == 0) return;
   if (cmp > 0) {
     node->right       = tree->root;
@@ -152,8 +153,9 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func
 void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   if (!tree->root) return;
 
-  tree->root = _splay(tree->root, node, func);
-  if (func(tree->root, node) != 0) return;
+  int cmp = 0;
+  tree->root = _splay(tree->root, node, func, &cmp);
+  if (cmp != 0) return;
 
   if (!tree->root->left) {
 #ifdef _SPLAY_SIBLING_POINTER
@@ -187,8 +189,9 @@ void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func
 }
 
 struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
-  tree->root = _splay(tree->root, node, func);
-  if (func(tree->root, node) == 0) {
+  int cmp = 0;
+  tree->root = _splay(tree->root, node, func, &cmp);
+  if (cmp == 0) {
     return tree->root;
   }
 
@@ -196,29 +199,31 @@ struct splay_node* splay_search(struct splay_tree *tree, struct splay_node *node
 }
 
 struct splay_node* splay_search_lower(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
-  tree->root = _splay(tree->root, node, func);
-  if (func(tree->root, node) <= 0) {
+  int cmp = 0;
+  tree->root = _splay(tree->root, node, func, &cmp);
+  if (cmp <= 0) {
     return tree->root;
   }
 
-  if (!tree->root->left) return NULL;
-  struct splay_node *cur;
+#ifdef _SPLAY_SIBLING_POINTER
+  return tree->root->prev;
+#endif
 
-  for (cur = tree->root->left; cur->right; cur = cur->right) {}
-  return cur;
+  return splay_prev(tree, tree->root, func);
 }
 
 struct splay_node* splay_search_greater(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
-  tree->root = _splay(tree->root, node, func);
-  if (func(tree->root, node) >= 0) {
+  int cmp = 0;
+  tree->root = _splay(tree->root, node, func, &cmp);
+  if (cmp >= 0) {
     return tree->root;
   }
 
-  if (!tree->root->right) return NULL;
-  struct splay_node *cur;
+#ifdef _SPLAY_SIBLING_POINTER
+  return tree->root->next;
+#endif
 
-  for (cur = tree->root->right; cur->left; cur = cur->left) {}
-  return cur;
+  return splay_next(tree, tree->root, func);
 }
 
 struct splay_node* splay_first(struct splay_tree *tree) {
@@ -258,7 +263,8 @@ struct splay_node* splay_prev(struct splay_tree *tree, struct splay_node *node, 
 
   struct splay_node *p;
   if (node->left) goto move_prev;
-  tree->root = _splay(tree->root, node, func);
+  int notUsed;
+  tree->root = _splay(tree->root, node, func, &notUsed);
 
 move_prev:
   for(p = node->left; p && p->right; p = p->right) {}
@@ -274,7 +280,8 @@ struct splay_node* splay_next(struct splay_tree *tree, struct splay_node *node, 
 
   struct splay_node *p;
   if (node->right) goto move_next;
-  tree->root = _splay(tree->root, node, func);
+  int notUsed;
+  tree->root = _splay(tree->root, node, func, &notUsed);
 
 move_next:
   for(p = node->right; p && p->left; p = p->left) {}
