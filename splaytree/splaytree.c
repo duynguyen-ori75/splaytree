@@ -2,7 +2,7 @@
 Copyright (C) 2021-present Duy Nguyen <duynguyen.ori75@gmail.com>
 All rights reserved.
 
-Last modification: Apr 21, 2021
+Last modification: May 29, 2021
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -111,6 +111,9 @@ void splay_tree_init(struct splay_tree *tree) {
   tree->root = NULL;
 }
 
+
+#ifndef _SPLAY_INSERT_RANDOM
+
 void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   _init_splay_node(node);
 
@@ -149,6 +152,54 @@ void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func
   }
   tree->root = node;
 }
+
+#else /* _SPLAY_INSERT_RANDOM */
+
+void splay_insert(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
+  _init_splay_node(node);
+
+  if (!tree->root) {
+    tree->root = node;
+    return;
+  }
+
+  int cmp;
+  struct splay_node *cur = tree->root;
+  struct splay_node *p = NULL;
+
+  while(cur) {
+    cmp = func(cur, node);
+    if (cmp == 0) return;
+
+    p = cur;
+    cur = (cmp > 0) ? cur->left : cur->right;
+  }
+
+  assert(p != NULL);
+  if(func(p, node) > 0) {
+    p->left = node;
+#ifdef _SPLAY_SIBLING_POINTER
+    node->next = p;
+    node->prev = p->prev;
+    if (p->prev) p->prev->next = node;
+    p->prev = node;
+#endif
+  } else {
+    p->right = node;
+#ifdef _SPLAY_SIBLING_POINTER
+    node->prev = p;
+    node->next = p->next;
+    if (p->next) p->next->prev = node;
+    p->next = node;
+#endif
+  }
+
+  if (_SPLAY_RATIO) {
+    tree->root = _splay(tree->root, node, func, &cmp);
+  }
+}
+
+#endif /* _SPLAY_INSERT_RANDOM */
 
 void splay_delete(struct splay_tree *tree, struct splay_node *node, compare_func *func) {
   if (!tree->root) return;

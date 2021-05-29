@@ -2,7 +2,7 @@
 Copyright (C) 2021-present Duy Nguyen <duynguyen.ori75@gmail.com>
 All rights reserved.
 
-Last modification: Apr 19, 2021
+Last modification: May 29, 2021
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -29,9 +29,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #ifndef _DUYNGUYEN_SPLAY_TREE
 #define _DUYNGUYEN_SPLAY_TREE
 
-#include "stdint.h"
+#include <stdint.h>
 
 #define _get_entry(ELEM, STRUCT, MEMBER) ((STRUCT *) ((int8_t *) (ELEM) - offsetof (STRUCT, MEMBER)))
+
+#ifdef _SPLAY_INSERT_RANDOM
+#define _SPLAY_RATIO (rand() % 3 < 1)
+#endif
 
 #ifdef __cplusplus
 
@@ -42,6 +46,7 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdbool.h>
+#include <assert.h>
 
 struct splay_node {
   struct splay_node *left, *right;
