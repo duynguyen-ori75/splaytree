@@ -9,6 +9,8 @@ extern "C" {
 
 }
 
+#define NO_ENTRIES 10000
+
 struct data_node {
 public:
   int key;
@@ -30,11 +32,11 @@ inline int compare(T2 *lhs, T2 *rhs) {
 }
 
 TEST(SplayTree, InsertAndSearch) {
-  data_node data[100];
+  data_node data[NO_ENTRIES];
   splay_tree tree;
   splay_tree_init(&tree);
 
-  for(int i = 0; i < 100; i ++) {
+  for(int i = 0; i < NO_ENTRIES; i ++) {
     data[i].key = i * 2 + 1;
     splay_insert(&tree, &data[i].node, compare<data_node, struct splay_node>);
   }
@@ -42,7 +44,7 @@ TEST(SplayTree, InsertAndSearch) {
   data_node query, *result;
   splay_node *cur;
   int expectedKey;
-  for(int i = 0; i < 200; i ++) {
+  for(int i = 0; i < 2 * NO_ENTRIES; i ++) {
     query.key = i;
     cur = splay_search(&tree, &query.node, compare<data_node, struct splay_node>);
     if (i % 2) {
@@ -70,13 +72,13 @@ TEST(SplayTree, InsertAndSearch) {
 }
 
 TEST(SplayTree, InsertRandomly) {
-  data_node data[1000];
+  data_node data[NO_ENTRIES];
   splay_tree tree;
   splay_tree_init(&tree);
   std::unordered_set<int> correct;
 
-  for(int i = 0; i < 1000; i ++) {
-    data[i].key = rand() % 10000;
+  for(int i = 0; i < NO_ENTRIES; i ++) {
+    data[i].key = rand() % 10 * NO_ENTRIES;
     correct.insert(data[i].key);
     splay_insert(&tree, &data[i].node, compare<data_node, struct splay_node>);
   }
@@ -92,19 +94,19 @@ TEST(SplayTree, InsertRandomly) {
 }
 
 TEST(SplayTree, RemoveOps) {
-  data_node data[200];
+  data_node data[2 * NO_ENTRIES];
   splay_tree tree;
   splay_tree_init(&tree);
 
-  for(int i = 0; i < 200; i ++) {
+  for(int i = 0; i < 2 * NO_ENTRIES; i ++) {
     data[i].key = i;
     splay_insert(&tree, &data[i].node, compare<data_node, struct splay_node>);
   }
 
   data_node query, *result;
   splay_node *cur, *nextCur, *prevCur;
-  for(int i = 0; i < 100; i ++) {
-    query.key = rand() % 200;
+  for(int i = 0; i < NO_ENTRIES; i ++) {
+    query.key = rand() % (2 * NO_ENTRIES);
     cur = splay_search(&tree, &query.node, compare<data_node, struct splay_node>);
     prevCur = splay_prev(&tree, cur, compare<data_node, struct splay_node>);
     nextCur = splay_next(&tree, cur, compare<data_node, struct splay_node>);
@@ -138,11 +140,11 @@ TEST(SplayTree, RemoveOps) {
 }
 
 TEST(SplayTree, CursorOperator) {
-  data_node data[201];
+  data_node data[NO_ENTRIES+1];
   splay_tree tree;
   splay_tree_init(&tree);
 
-  for(int i = 1; i <= 200; i ++) {
+  for(int i = 1; i <= NO_ENTRIES; i ++) {
     data[i].key = i;
     splay_insert(&tree, &data[i].node, compare<data_node, struct splay_node>);
   }
@@ -152,9 +154,9 @@ TEST(SplayTree, CursorOperator) {
   ASSERT_EQ(cur, tree.root);
   ASSERT_EQ(cur->left, nullptr);
   ASSERT_EQ(result->key, 1);
-  for(int i = 2; i <= 201; i ++) {
+  for(int i = 2; i <= NO_ENTRIES+1; i ++) {
     cur = splay_next(&tree, cur, compare<data_node, struct splay_node>);
-    if (i == 201) {
+    if (i == NO_ENTRIES+1) {
       ASSERT_TRUE(cur == nullptr);
       break;
     }
@@ -167,8 +169,8 @@ TEST(SplayTree, CursorOperator) {
   result = _get_entry(cur, data_node, node);
   ASSERT_EQ(cur, tree.root);
   ASSERT_EQ(cur->right, nullptr);
-  ASSERT_EQ(result->key, 200);
-  for(int i = 199; i >= 0; i --) {
+  ASSERT_EQ(result->key, NO_ENTRIES);
+  for(int i = NO_ENTRIES-1; i >= 0; i --) {
     cur = splay_prev(&tree, cur, compare<data_node, struct splay_node>);
     if (i == 0) {
       ASSERT_TRUE(cur == nullptr);
@@ -181,11 +183,11 @@ TEST(SplayTree, CursorOperator) {
 }
 
 TEST(RedBlackTree, CursorOperation) {
-  kv_node_rb data[201];
+  kv_node_rb data[NO_ENTRIES+1];
   rb_root tree;
   rb_root_init(&tree, NULL);
 
-  for(int i = 1; i <= 200; i ++) {
+  for(int i = 1; i <= NO_ENTRIES; i ++) {
     data[i].key = i;
     rbwrap_insert(&tree, &data[i].node, compare<kv_node_rb, struct rb_node>);
   }
@@ -194,9 +196,9 @@ TEST(RedBlackTree, CursorOperation) {
   kv_node_rb *result = _get_entry(cur, kv_node_rb, node);
   ASSERT_EQ(cur->rb_left, nullptr);
   ASSERT_EQ(result->key, 1);
-  for(int i = 2; i <= 201; i ++) {
+  for(int i = 2; i <= NO_ENTRIES+1; i ++) {
     cur = rb_next(cur);
-    if (i == 201) {
+    if (i == NO_ENTRIES+1) {
       ASSERT_TRUE(cur == nullptr);
       break;
     }
@@ -208,8 +210,8 @@ TEST(RedBlackTree, CursorOperation) {
   cur = rb_last(&tree);
   result = _get_entry(cur, kv_node_rb, node);
   ASSERT_EQ(cur->rb_right, nullptr);
-  ASSERT_EQ(result->key, 200);
-  for(int i = 199; i >= 0; i --) {
+  ASSERT_EQ(result->key, NO_ENTRIES);
+  for(int i = NO_ENTRIES-1; i >= 0; i --) {
     cur = rb_prev(cur);
     if (i == 0) {
       ASSERT_TRUE(cur == nullptr);
